@@ -7,7 +7,8 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import logging from "morgan";
 import { checkMissingField } from "./utils/requestUtils.js";
-import activityRouter from "./routes/activity.js";
+
+import apiRoute from "./api/api.js";
 
 
 const HOSTNAME = process.env.SERVER_IP || "127.0.0.1";
@@ -21,7 +22,7 @@ webServer.use(express.urlencoded({ extended: true })); // for parsing applicatio
 webServer.use(helmet());
 webServer.use(cookieParser());
 webServer.use(morgan("dev"));
-webServer.use(logging("tiny"));
+webServer.use(logging("combined"));
 
 
 
@@ -34,7 +35,13 @@ const LOGIN_DATA_KEYS = ["username", "password"];
 // server routes
 webServer.get("/", (req, res) => res.send("This is Lunarfit"));
 
-webServer.use("/activity", activityRouter);
+webServer.use("/api", apiRoute)
+
+
+
+
+
+
 
 
 
