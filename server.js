@@ -10,7 +10,6 @@ import { checkMissingField } from "./utils/requestUtils.js";
 
 import apiRoute from "./api/api.js";
 
-
 const HOSTNAME = process.env.SERVER_IP || "127.0.0.1";
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -24,46 +23,77 @@ webServer.use(cookieParser());
 webServer.use(morgan("dev"));
 webServer.use(logging("combined"));
 
-
-
-
-
 //  DATA_KEYS
 const USER_DATA_KEYS = ["username", "password", "name", "age", "weight"];
 const LOGIN_DATA_KEYS = ["username", "password"];
 
 // server routes
-webServer.get("/", (req, res) => res.send("This is Lunarfit"));
+webServer.get("/", (req, res) => {
+  const usersData = {
+    id: 1,
+    fullName: "Karin",
+    age: 25,
+    weight: 65,
+    height: 168,
+    gender: "male",
+    activity: [
+      {
+        type: "Run",
+        time: "12:00 - 12:30 PM",
+        name: "Run with dad",
+        duration: "120",
+      },
+      {
+        type: "Swim",
+        time: "10:10 - 10:40 AM",
+        name: "Swim with mom",
+        duration: "30",
+      },
+      {
+        type: "Walk",
+        time: "6:00 - 7:00 PM",
+        name: "Walk with dog",
+        duration: "60",
+      },
+      {
+        type: "Hike",
+        time: "14:00 - 20:00 PM",
+        name: "Hike with friend",
+        duration: "500",
+      },
+      {
+        type: "Bike",
+        time: "14:00 - 20:00 PM",
+        name: "Bike with brother",
+        duration: "200",
+      },
+    ],
+  };
 
-webServer.use("/api", apiRoute)
+  res.json(usersData);
+});
 
-
-
-
-
-
-
-
+webServer.use("/api", apiRoute);
 
 // initilize web server
 const currentServer = webServer.listen(PORT, HOSTNAME, () => {
-    console.log(
-        `DATABASE IS CONNECTED: NAME => ${databaseClient.db().databaseName}`
-    );
-    console.log(`SERVER IS ONLINE => http://${HOSTNAME}:${PORT}`);
+  console.log(
+    `DATABASE IS CONNECTED: NAME => ${databaseClient.db().databaseName}`
+  );
+  console.log(`SERVER IS ONLINE => http://${HOSTNAME}:${PORT}`);
 });
 
 const cleanup = () => {
-    currentServer.close(() => {
-        console.log(
-            `DISCONNECT DATABASE: NAME => ${databaseClient.db().databaseName}`
-        );
-        try {
-            databaseClient.close();
-        } catch (error) {
-            console.error(error);
-        }
-    });
+  currentServer.close(() => {
+    console.log(
+      `DISCONNECT DATABASE: NAME => ${databaseClient.db().databaseName}`
+    );
+    try {
+      databaseClient.close();
+    } catch (error) {
+      console.error(error);
+    }
+  });
 };
 
 // cleanup connection such as database
