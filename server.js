@@ -10,7 +10,7 @@ import { checkMissingField } from "./utils/requestUtils.js";
 
 import apiRoute from "./api/api.js";
 
-const PORT = process.env.SERVER_PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 const webServer = express();
