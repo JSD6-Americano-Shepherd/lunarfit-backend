@@ -1,6 +1,5 @@
 import express from "express";
 import databaseClient from "../configs/database.mjs";
-import { ObjectId } from "mongodb";
 import { checkMissingField } from "../utils/requestUtils.js";
 const signUpRouter = express.Router();
 const USER_DATA_KEYS = ["firstName", "lastName", "email", "password"];
@@ -30,6 +29,10 @@ signUpRouter.post("/", async (req, res) => {
     gender: "",
   };
   await databaseClient.db().collection("users").insertOne(data);
+
+
+
+
   res.status(200).send("Create user data successfully");
   //   res.redirect("/home");
 });
