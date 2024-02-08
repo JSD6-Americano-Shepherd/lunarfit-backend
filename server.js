@@ -6,15 +6,24 @@ import morgan from "morgan";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import logging from "morgan";
-import { checkMissingField } from "./utils/requestUtils.js";
-
+import authenticateToken from "./middlewares/authenticatetoken.js";
 import apiRoute from "./api/api.js";
 
 const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 const webServer = express();
+
+
+
+
 webServer.use(cors());
+
+
+
+
+
+
 webServer.use(express.json()); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 webServer.use(helmet());
@@ -77,12 +86,27 @@ webServer.get("/", (req, res) => {
 
 webServer.use("/api", apiRoute);
 
+
+webServer.get("/profile", authenticateToken, (req, res) => {
+  const { user } = req.data;
+
+  //console.log(req.user);
+  console.log(`datauser: ${user}`);
+  res.json(user.email);
+});
+
+
+
+
+
+
+
 // initilize web server
 const currentServer = webServer.listen(PORT, () => {
   console.log(
     `DATABASE IS CONNECTED: NAME => ${databaseClient.db().databaseName}`
   );
-  console.log(`SERVER IS ONLINE => http://${PORT}`);
+  console.log(`SERVER IS ONLINE => server is live on port ${PORT}`);
 });
 
 const cleanup = () => {
