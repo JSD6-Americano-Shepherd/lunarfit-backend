@@ -1,23 +1,14 @@
 import express from "express";
-import cors from "cors";
-import morgan from "morgan";
-import helmet from "helmet";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
+
 import { checkMissingField } from "../utils/requestUtils.js";
 import databaseClient from "../configs/database.mjs";
 const signInRouter = express.Router();
 
 
-signInRouter.use(express.json()); // for parsing application/json
-signInRouter.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-signInRouter.use(helmet());
-signInRouter.use(morgan("dev"));
-signInRouter.use(cookieParser());
-signInRouter.use(cors());
-dotenv.config();
+
+
 
 
 
@@ -72,12 +63,12 @@ signInRouter.post("/", async (req, res) => {
         const token = createJwt(user);
 
 
-        res.cookie('token', token, {
+        res.cookie('tokenByJarnBank', token, {
             maxAge: 300000000,
             secure: true,
             httpOnly: true,
             sameSite: "none",
-        });
+        })
 
         res.status(200).send({ message: 'Login successful', token });
     } catch (error) {
