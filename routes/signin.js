@@ -5,22 +5,7 @@ import jwt from "jsonwebtoken";
 import { checkMissingField } from "../utils/requestUtils.js";
 import databaseClient from "../configs/database.mjs";
 const signInRouter = express.Router();
-
-
-
-
-
-
-
-
 const LOGIN_DATA_KEYS = ["email", "password"];
-
-
-
-
-
-
-
 
 
 signInRouter.get("/", (req, res) => res.send("This is signInRouter "));
@@ -33,6 +18,7 @@ signInRouter.get("/", (req, res) => res.send("This is signInRouter "));
 
 signInRouter.post("/", async (req, res) => {
     try {
+
         let { email, password } = req.body;
         const [isBodyChecked, missingFields] = checkMissingField(
             LOGIN_DATA_KEYS,
@@ -62,9 +48,9 @@ signInRouter.post("/", async (req, res) => {
 
         const token = createJwt(user);
 
-
-        res.cookie('tokenByJarnBank', token, {
-            maxAge: 300000000,
+        const tenDaysInMilliseconds = 10 * 24 * 60 * 60 * 1000;
+        res.cookie('token', token, {
+            maxAge: tenDaysInMilliseconds,
             secure: true,
             httpOnly: true,
             sameSite: "none",
@@ -84,7 +70,7 @@ function createJwt(user) {
             email: user.email,
         },
     };
-    const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
+    const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "10d" });
     return token;
 }
 

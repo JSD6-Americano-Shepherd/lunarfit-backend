@@ -14,24 +14,6 @@ const PORT = process.env.PORT || 3000;
 dotenv.config();
 const webServer = express();
 
-
-
-
-
-
-
-// const corsOptions = {
-//   origin: ['http://localhost:5173/', ''],
-//   methods: "GET,PUT,PATCH,POST,DELETE",
-//   credentials: true,
-//   optionsSuccessStatus: 204,
-// };
-//webServer.use(cors(corsOptions))
-
-
-//webServer.use(cors());
-
-
 const allowedOrigins = ['http://localhost:5173'];
 
 // กำหนด cors options
@@ -48,21 +30,6 @@ const corsOptions = {
 
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
 webServer.use(cors(corsOptions));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 webServer.use(express.json()); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 //webServer.use(helmet());
@@ -73,21 +40,6 @@ webServer.use(logging("combined"));
 //  DATA_KEYS
 const USER_DATA_KEYS = ["username", "password", "name", "age", "weight"];
 const LOGIN_DATA_KEYS = ["username", "password"];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // server routes
 webServer.get("/", (req, res) => {
@@ -148,12 +100,6 @@ webServer.get("/profile", authenticateToken, (req, res) => {
   console.log(`datauser: ${user}`);
   res.json(user.email);
 });
-
-
-
-
-
-
 
 // initilize web server
 const currentServer = webServer.listen(PORT, () => {
