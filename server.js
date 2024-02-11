@@ -48,7 +48,7 @@ webServer.get("/", (req, res) => {
 
   const usersData = {
     id: 1,
-    fullName: "Karin",
+    fullName: "Karin2",
     age: 25,
     weight: 65,
     height: 168,
