@@ -29,25 +29,6 @@ const webServer = express();
 // };
 
 
-
-
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error("Not allowed by CORS"));
-//     }
-//   },
-//   credentials: true, // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
-// };
-
-
-
-
-
-
-
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
 //webServer.use(cors(corsOptions));
 webServer.use(cors({
