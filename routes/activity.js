@@ -24,35 +24,6 @@ activityRouter.get("/", authenticateToken, async (req, res) => {
   res.json(activityData);
 });
 
-
-activityRouter.get("/", authenticateToken, async (req, res) => {
-  const { email } = req.data.user;
-
-
-  const activityData = await databaseClient
-    .db()
-    .collection("activities")
-    .find({ email }) // Add a query filter to select documents where userId is "01"
-    .toArray();
-  res.json(activityData);
-
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 activityRouter.post("/", async (req, res) => {
   let activity = req.body;
   const [isBodyChecked, missingFields] = checkMissingField(
