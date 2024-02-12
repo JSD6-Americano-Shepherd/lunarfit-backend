@@ -5,7 +5,6 @@ import authenticateToken from "../middlewares/authenticatetoken.js";
 import { ObjectId } from "mongodb";
 const activityRouter = express.Router();
 const ACTIVITY_DATA_KEYS = [
-  "userId",
   "type",
   "name",
   "date",
@@ -13,6 +12,7 @@ const ACTIVITY_DATA_KEYS = [
   "end",
   "note",
   "image",
+  "email",
 ];
 
 activityRouter.get("/", authenticateToken, async (req, res) => {
@@ -25,11 +25,16 @@ activityRouter.get("/", authenticateToken, async (req, res) => {
   res.json(activityData);
 });
 
-activityRouter.post("/", async (req, res) => {
+activityRouter.post("/", authenticateToken, async (req, res) => {
+  const { email } = req.data.user;
   let activity = req.body;
+  const sumActivity = {
+    ...activity,
+    email: email, // This adds the email key with its value to the activity object
+  };
   const [isBodyChecked, missingFields] = checkMissingField(
     ACTIVITY_DATA_KEYS,
-    activity
+    sumActivity
   );
 
   if (!isBodyChecked) {
@@ -37,7 +42,7 @@ activityRouter.post("/", async (req, res) => {
     return;
   }
 
-  await databaseClient.db().collection("activities").insertOne(activity);
+  await databaseClient.db().collection("activities").insertOne(sumActivity);
   res.send("Create activity data successfully");
 });
 
