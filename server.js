@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 dotenv.config();
 const webServer = express();
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ["http://localhost:5173"];
 
 // กำหนด cors options
 const corsOptions = {
@@ -22,14 +22,15 @@ const corsOptions = {
     if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
+  credentials: true, // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
 };
 
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
 webServer.use(cors(corsOptions));
+// webServer.use(cors());
 webServer.use(express.json()); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 //webServer.use(helmet());
@@ -43,9 +44,6 @@ const LOGIN_DATA_KEYS = ["username", "password"];
 
 // server routes
 webServer.get("/", (req, res) => {
-
-
-
   const usersData = {
     id: 1,
     fullName: "Karin2",
@@ -92,9 +90,8 @@ webServer.get("/", (req, res) => {
 
 webServer.use("/api", apiRoute);
 
-
 webServer.get("/profile", authenticateToken, async (req, res) => {
-  88
+  88;
 
   //console.log(req.user);
 
@@ -104,8 +101,6 @@ webServer.get("/profile", authenticateToken, async (req, res) => {
     .find({ userId: "01" }) // Add a query filter to select documents where userId is "01"
     .toArray();
   res.json(activityData);
-
-
 
   console.log(`datauser: ${user}`);
   //res.json(user.email);
