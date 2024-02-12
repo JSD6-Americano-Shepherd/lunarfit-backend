@@ -93,12 +93,22 @@ webServer.get("/", (req, res) => {
 webServer.use("/api", apiRoute);
 
 
-webServer.get("/profile", authenticateToken, (req, res) => {
-  const { user } = req.data;
+webServer.get("/profile", authenticateToken, async (req, res) => {
+  88
 
   //console.log(req.user);
+
+  const activityData = await databaseClient
+    .db()
+    .collection("activities")
+    .find({ userId: "01" }) // Add a query filter to select documents where userId is "01"
+    .toArray();
+  res.json(activityData);
+
+
+
   console.log(`datauser: ${user}`);
-  res.json(user.email);
+  //res.json(user.email);
 });
 
 // initilize web server
