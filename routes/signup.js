@@ -30,9 +30,6 @@ signUpRouter.post("/", async (req, res) => {
   };
   await databaseClient.db().collection("users").insertOne(data);
 
-
-
-
   res.status(200).send("Create user data successfully");
   //   res.redirect("/home");
 });
