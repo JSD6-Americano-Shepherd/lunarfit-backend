@@ -14,23 +14,28 @@ const PORT = process.env.PORT || 3000;
 dotenv.config();
 const webServer = express();
 
-const allowedOrigins = ["http://localhost:5173"];
+// const allowedOrigins = ["https://lunarfit-frontend.vercel.app/"];
 
 // กำหนด cors options
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true, // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true, // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
+// };
 
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
-webServer.use(cors(corsOptions));
-// webServer.use(cors());
+// webServer.use(cors(corsOptions));
+webServer.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 webServer.use(express.json()); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 //webServer.use(helmet());
@@ -43,7 +48,7 @@ const USER_DATA_KEYS = ["username", "password", "name", "age", "weight"];
 const LOGIN_DATA_KEYS = ["username", "password"];
 
 // server routes
-webServer.get("/", (req, res) => {
+webServer.get("/", authenticateToken, (req, res) => {
   const usersData = {
     id: 1,
     fullName: "Karin2",
