@@ -9,6 +9,7 @@ resetEmailRouter.patch("/", authenticateToken, async (req, res) => {
   const { email } = req.data.user;
   console.log(currentEmail);
   console.log(email);
+  res.setHeader();
   try {
     // เช็คว่า currentEmail ตรงกับอีเมลที่ได้จาก req.data.user หรือไม่
     if (currentEmail !== email) {
@@ -28,7 +29,14 @@ resetEmailRouter.patch("/", authenticateToken, async (req, res) => {
     // Generate new token
     const newToken = createJwt(newEmail); // สร้าง token ใหม่ด้วยอีเมลใหม่
     // Update token in cookie
-    res.clearCookie("token");
+    // res.clearCookie("token");
+    const tenDaysInMilliseconds = 10 * 24 * 60 * 60 * 1000;
+    res.cookie("token", newToken, {
+      maxAge: tenDaysInMilliseconds,
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+    });
     // res.cookie("token", newToken, { maxAge: 900000, httpOnly: true }); // Example: Set cookie for 15 minutes
     res.status(200).send("Email updated successfully");
   } catch (error) {
