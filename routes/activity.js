@@ -12,15 +12,20 @@ const ACTIVITY_DATA_KEYS = [
   "end",
   "note",
   "image",
-  "email",
+  "userId",
 ];
 
 activityRouter.get("/", authenticateToken, async (req, res) => {
   const { email } = req.data.user;
+  const userData = await databaseClient
+    .db()
+    .collection("users")
+    .findOne({ email });
+  const userId = userData._id;
   const activityData = await databaseClient
     .db()
     .collection("activities")
-    .find({ email }) // Add a query filter to select documents where userId is "01"
+    .find({ userId: new ObjectId(userId) }) // Add a query filter to select documents where userId is "01"
     .toArray();
   res.json(activityData);
 });
@@ -28,9 +33,15 @@ activityRouter.get("/", authenticateToken, async (req, res) => {
 activityRouter.post("/", authenticateToken, async (req, res) => {
   const { email } = req.data.user;
   let activity = req.body;
+  const userData = await databaseClient
+    .db()
+    .collection("users")
+    .findOne({ email });
+  const userId = userData._id;
+  console.log("This is user id:", userId);
   const sumActivity = {
     ...activity,
-    email: email, // This adds the email key with its value to the activity object
+    userId: new ObjectId(userId),
   };
   const [isBodyChecked, missingFields] = checkMissingField(
     ACTIVITY_DATA_KEYS,
