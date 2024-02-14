@@ -29,7 +29,7 @@ const webServer = express();
 // };
 
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
-// webServer.use(cors(corsOptions));
+//webServer.use(cors(corsOptions));
 webServer.use(
   cors({
     origin: true,
