@@ -30,12 +30,7 @@ const webServer = express();
 
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
 //webServer.use(cors(corsOptions));
-webServer.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+webServer.use(cors());
 webServer.use(express.json()); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 //webServer.use(helmet());
