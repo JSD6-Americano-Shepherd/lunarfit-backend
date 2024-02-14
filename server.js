@@ -36,7 +36,7 @@ webServer.use(
     credentials: true,
   })
 );
-webServer.use(express.json()); // for parsing application/json
+webServer.use(express.json({ limit: "1gb" })); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 //webServer.use(helmet());
 webServer.use(cookieParser());

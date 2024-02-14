@@ -22,14 +22,12 @@ activityDetailRouter.get(
   async (req, res) => {
     const { email } = req.data.user; // Assuming authenticateToken attaches user info to req.user
     const { activityId } = req.params;
-
     try {
       // Convert activityId from string to ObjectId for the query
       const activityData = await databaseClient
         .db()
         .collection("activities")
-        .findOne({ _id: new ObjectId(activityId), email }); // No .toArray() needed
-
+        .findOne({ _id: new ObjectId(activityId) }); // No .toArray() needed
       if (activityData) {
         res.json(activityData);
       } else {
