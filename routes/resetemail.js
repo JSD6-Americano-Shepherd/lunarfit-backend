@@ -9,7 +9,7 @@ resetEmailRouter.patch("/", authenticateToken, async (req, res) => {
   const { email } = req.data.user;
   console.log(currentEmail);
   console.log(email);
-  res.setHeader();
+  // res.setHeader();
   try {
     // เช็คว่า currentEmail ตรงกับอีเมลที่ได้จาก req.data.user หรือไม่
     if (currentEmail !== email) {
