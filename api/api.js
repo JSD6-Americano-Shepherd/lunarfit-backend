@@ -10,6 +10,7 @@ import signUpRouter from "../routes/signup.js";
 import dashboardRouter from "../routes/dashboard.js";
 import activityDetailRouter from "../routes/activityDetail.js";
 import accountRouter from "../routes/account.js";
+import sumActivityRouter from "../routes/sumactivity.js";
 
 apiRoute.get("/", (req, res) => res.send("This is apiroute "));
 
@@ -22,5 +23,8 @@ apiRoute.use("/resetpassword", resetPasswordRouter);
 apiRoute.use("/resetemail", resetEmailRouter);
 apiRoute.use("/signin", signInRouter);
 apiRoute.use("/signup", signUpRouter);
+apiRoute.use("/statistic", statRouter);
+apiRoute.use("/sumactivity", sumActivityRouter);
+
 
 export default apiRoute;
