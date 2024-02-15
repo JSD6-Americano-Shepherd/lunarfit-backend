@@ -3,6 +3,8 @@ import databaseClient from "../configs/database.mjs";
 import { checkMissingField } from "../utils/requestUtils.js";
 import authenticateToken from "../middlewares/authenticatetoken.js";
 import { ObjectId } from "mongodb";
+import uploadToCloudinary from "../middlewares/uploadToCloudinary.js";
+import { calculateDuration } from "../utils/calDuration.js";
 const activityDetailRouter = express.Router();
 
 const ACTIVITY_DATA_KEYS = [
@@ -22,12 +24,21 @@ activityDetailRouter.get(
   async (req, res) => {
     const { email } = req.data.user; // Assuming authenticateToken attaches user info to req.user
     const { activityId } = req.params;
+    const userData = await databaseClient
+      .db()
+      .collection("users")
+      .findOne({ email });
+
+    const userId = userData._id;
     try {
       // Convert activityId from string to ObjectId for the query
       const activityData = await databaseClient
         .db()
         .collection("activities")
-        .findOne({ _id: new ObjectId(activityId) }); // No .toArray() needed
+        .findOne({
+          _id: new ObjectId(activityId),
+          userId: new ObjectId(userId),
+        }); // No .toArray() needed
       if (activityData) {
         res.json(activityData);
       } else {
@@ -50,15 +61,41 @@ activityDetailRouter.patch(
   async (req, res) => {
     const { activityId } = req.params;
     const { email } = req.data.user; // Assuming authenticateToken middleware attaches user details to req.user
+    const { image } = req.body;
     const updateData = req.body; // The data to update the activity with
+    const userData = await databaseClient
+      .db()
+      .collection("users")
+      .findOne({ email });
 
+    if (image) {
+      if (image !== "") {
+        const cloudinaryResult = await uploadToCloudinary(image);
+        const imageUrl = cloudinaryResult.secure_url;
+        updateData.image = imageUrl;
+      } else {
+        updateData.image = "";
+      }
+    }
+    const duration = calculateDuration(
+      updateData.start,
+      updateData.end
+    ).toString();
+    updateData.duration = duration;
+    const [year, month, day] = updateData.date.split("-").map(Number);
+    updateData.day = day.toString();
+    updateData.month = month.toString();
+    updateData.year = year.toString();
+    console.log(updateData);
+    const userId = userData._id;
+    // console.log(req.body.image);
     try {
       // Convert activityId from string to ObjectId for the query
       const result = await databaseClient
         .db()
         .collection("activities")
         .updateOne(
-          { _id: new ObjectId(activityId), email }, // Ensure the activity belongs to the user
+          { _id: new ObjectId(activityId), userId: new ObjectId(userId) }, // Ensure the activity belongs to the user
           { $set: updateData } // Use $set operator to update the fields
         );
 
