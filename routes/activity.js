@@ -57,23 +57,6 @@ activityRouter.post("/", authenticateToken, async (req, res) => {
   res.send("Create activity data successfully");
 });
 
-// activityRouter.post("/", async (req, res) => {
-//   let body = req.body;
-//   const [isBodyChecked, missingFields] = checkMissingField(
-//     ACTIVITY_DATA_KEYS,
-//     body
-//   );
-//   if (!isBodyChecked) {
-//     res.send(`Missing Fields: ${"".concat(missingFields)}`);
-//     return;
-//   }
-
-//   body["user_id"] = new ObjectId(body.user_id);
-
-//   await databaseClient.db().collection("health-history").insertOne(body);
-//   res.send("Create health data successfully");
-// });
-
 activityRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
   console.log("Hello");
