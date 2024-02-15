@@ -3,6 +3,8 @@ import databaseClient from "../configs/database.mjs";
 import { checkMissingField } from "../utils/requestUtils.js";
 import authenticateToken from "../middlewares/authenticatetoken.js";
 import { ObjectId } from "mongodb";
+import { calculateDuration } from "../utils/calDuration.js";
+import uploadToCloudinary from "../middlewares/uploadToCloudinary.js";
 const activityRouter = express.Router();
 const ACTIVITY_DATA_KEYS = [
   "type",
@@ -12,25 +14,52 @@ const ACTIVITY_DATA_KEYS = [
   "end",
   "note",
   "image",
-  "email",
+  "duration",
+  "year",
+  "month",
+  "day",
+  "userId",
 ];
 
 activityRouter.get("/", authenticateToken, async (req, res) => {
   const { email } = req.data.user;
+  const userData = await databaseClient
+    .db()
+    .collection("users")
+    .findOne({ email });
+  const userId = userData._id;
   const activityData = await databaseClient
     .db()
     .collection("activities")
-    .find({ email }) // Add a query filter to select documents where userId is "01"
+    .find({ userId: new ObjectId(userId) }) // Add a query filter to select documents where userId is "01"
     .toArray();
   res.json(activityData);
 });
 
 activityRouter.post("/", authenticateToken, async (req, res) => {
   const { email } = req.data.user;
+  const { image } = req.body;
   let activity = req.body;
+
+  const userData = await databaseClient
+    .db()
+    .collection("users")
+    .findOne({ email });
+
+  const userId = userData._id;
+  const duration = calculateDuration(activity.start, activity.end).toString();
+
+  const [year, month, day] = activity.date.split("-").map(Number);
+  console.log("Duration: ", duration);
+  console.log(year, month, day);
+
   const sumActivity = {
     ...activity,
-    email: email, // This adds the email key with its value to the activity object
+    duration: duration,
+    year: year.toString(),
+    month: month.toString(),
+    day: day.toString(),
+    userId: new ObjectId(userId),
   };
   const [isBodyChecked, missingFields] = checkMissingField(
     ACTIVITY_DATA_KEYS,
@@ -41,27 +70,12 @@ activityRouter.post("/", authenticateToken, async (req, res) => {
     res.send(`Missing Fields: ${"".concat(missingFields)}`);
     return;
   }
-
+  const cloudinaryResult = await uploadToCloudinary(image);
+  const imageUrl = cloudinaryResult.secure_url;
+  sumActivity.image = imageUrl;
   await databaseClient.db().collection("activities").insertOne(sumActivity);
   res.send("Create activity data successfully");
 });
-
-// activityRouter.post("/", async (req, res) => {
-//   let body = req.body;
-//   const [isBodyChecked, missingFields] = checkMissingField(
-//     ACTIVITY_DATA_KEYS,
-//     body
-//   );
-//   if (!isBodyChecked) {
-//     res.send(`Missing Fields: ${"".concat(missingFields)}`);
-//     return;
-//   }
-
-//   body["user_id"] = new ObjectId(body.user_id);
-
-//   await databaseClient.db().collection("health-history").insertOne(body);
-//   res.send("Create health data successfully");
-// });
 
 activityRouter.delete("/:id", async (req, res) => {
   const { id } = req.params;
