@@ -23,7 +23,7 @@ apiRoute.use("/resetpassword", resetPasswordRouter);
 apiRoute.use("/resetemail", resetEmailRouter);
 apiRoute.use("/signin", signInRouter);
 apiRoute.use("/signup", signUpRouter);
-apiRoute.use("/statistic", statRouter);
+// apiRoute.use("/statistic", statRouter);
 apiRoute.use("/sumactivity", sumActivityRouter);
 
 
