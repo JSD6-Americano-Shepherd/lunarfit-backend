@@ -15,10 +15,10 @@ sumActivityRouter.get("/", authenticateToken, async (req, res) => {
     .collection("users")
     .findOne({ email });
 
-  console.log(userData);
+  // console.log(userData);
 
   const userId = userData._id;
-//   res.send(userId);
+  //   res.send(userId);
 
   const sumActivity = await databaseClient
     .db()
@@ -44,7 +44,7 @@ sumActivityRouter.get("/", authenticateToken, async (req, res) => {
       },
     ])
     .toArray();
-    res.status(200).json(sumActivity);
+  res.status(200).json(sumActivity);
 });
 
 export default sumActivityRouter;

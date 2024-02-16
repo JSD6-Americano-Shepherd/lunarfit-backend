@@ -11,11 +11,11 @@ import dashboardRouter from "../routes/dashboard.js";
 import activityDetailRouter from "../routes/activityDetail.js";
 import accountRouter from "../routes/account.js";
 
-import feedRouter from '../routes/feedback.js'; // new route
-import signOutRouter from '../routes/signout.js';
+import feedRouter from "../routes/feedback.js"; // new route
+import signOutRouter from "../routes/signout.js";
 import profileRouter from "../routes/profile.js";
 import sumActivityRouter from "../routes/sumactivity.js";
-
+import statRouter from "../routes/stat.js";
 
 apiRoute.get("/", (req, res) => res.send("This is apiroute "));
 apiRoute.use("/profile", profileRouter);
@@ -38,9 +38,6 @@ apiRoute.use("/feedback", feedRouter);
 // apiRoute.use("/statistic", statRouter);
 apiRoute.use("/sumactivity", sumActivityRouter);
 
-
+apiRoute.use("/stat", statRouter);
 
 export default apiRoute;
-
-
-
