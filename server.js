@@ -13,28 +13,32 @@ const PORT = process.env.PORT || 3000;
 
 dotenv.config();
 const webServer = express();
-const allowedOrigins = ["https://lunarfit-frontend.vercel.app/"];
+
+// const allowedOrigins = [
+//   "http://localhost:5173/",
+//   "https://lunarfit-frontend.vercel.app/",
+// ];
 // กำหนด cors options
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true, // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true, // อนุญาตให้ส่ง cookies และ headers ระหว่างโดเมน
+// };
 
 // ใช้ cors middleware โดยใช้ options ที่กำหนด
-webServer.use(cors(corsOptions));
+// webServer.use(cors(corsOptions));
 
-// webServer.use(
-//   cors({
-//     origin: true,
-//     credentials: true,
-//   })
-// );
+webServer.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 webServer.use(express.json({ limit: "1gb" })); // for parsing application/json
 webServer.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 //webServer.use(helmet());
