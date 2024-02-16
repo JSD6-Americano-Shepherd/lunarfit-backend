@@ -16,6 +16,7 @@ import signOutRouter from "../routes/signout.js";
 import profileRouter from "../routes/profile.js";
 import sumActivityRouter from "../routes/sumactivity.js";
 import statRouter from "../routes/stat.js";
+import displayActivityRouter from "../routes/displayActivity.js";
 
 apiRoute.get("/", (req, res) => res.send("This is apiroute "));
 apiRoute.use("/profile", profileRouter);
@@ -38,6 +39,6 @@ apiRoute.use("/feedback", feedRouter);
 // apiRoute.use("/statistic", statRouter);
 apiRoute.use("/sumactivity", sumActivityRouter);
 
-apiRoute.use("/stat", statRouter);
+apiRoute.use("/displayActivity", displayActivityRouter);
 
 export default apiRoute;
