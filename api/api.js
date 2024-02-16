@@ -15,7 +15,6 @@ import feedRouter from "../routes/feedback.js"; // new route
 import signOutRouter from "../routes/signout.js";
 import profileRouter from "../routes/profile.js";
 import sumActivityRouter from "../routes/sumactivity.js";
-import statRouter from "../routes/stat.js";
 import displayActivityRouter from "../routes/displayActivity.js";
 
 apiRoute.get("/", (req, res) => res.send("This is apiroute "));

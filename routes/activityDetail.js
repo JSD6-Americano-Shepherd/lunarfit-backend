@@ -60,62 +60,68 @@ activityDetailRouter.patch(
   authenticateToken,
   async (req, res) => {
     const { activityId } = req.params;
-    const { email } = req.data.user; // Assuming authenticateToken middleware attaches user details to req.user
+    // Corrected to access user details from req.user instead of req.data.user
+    const { email } = req.data.user;
     const { image } = req.body;
-    const updateData = req.body; // The data to update the activity with
-    const userData = await databaseClient
-      .db()
-      .collection("users")
-      .findOne({ email });
+    let updateData = req.body; // The data to update the activity with
 
-    if (image) {
-      if (image !== "") {
-        const cloudinaryResult = await uploadToCloudinary(image);
-        const imageUrl = cloudinaryResult.secure_url;
-        updateData.image = imageUrl;
-      } else {
-        updateData.image = "";
-      }
-    }
-    const duration = calculateDuration(
-      updateData.start,
-      updateData.end
-    ).toString();
-    updateData.duration = duration;
-    const [year, month, day] = updateData.date.split("-").map(Number);
-    updateData.day = day.toString();
-    updateData.month = month.toString();
-    updateData.year = year.toString();
-    console.log(updateData);
-    const userId = userData._id;
-    // console.log(req.body.image);
     try {
-      // Convert activityId from string to ObjectId for the query
+      const userData = await databaseClient
+        .db()
+        .collection("users")
+        .findOne({ email });
+
+      if (!userData) {
+        return res.status(404).send("User not found.");
+      }
+
+      if (image) {
+        if (image !== "") {
+          const cloudinaryResult = await uploadToCloudinary(image);
+          const imageUrl = cloudinaryResult.secure_url;
+          updateData.image = imageUrl;
+        } else {
+          updateData.image = "";
+        }
+      }
+
+      const duration = calculateDuration(
+        updateData.start,
+        updateData.end
+      ).toString();
+      updateData.duration = duration;
+
+      const [year, month, day] = updateData.date.split("-").map(Number);
+      updateData.day = day.toString();
+      updateData.month = month.toString();
+      updateData.year = year.toString();
+
+      const userId = userData._id;
+
       const result = await databaseClient
         .db()
         .collection("activities")
         .updateOne(
-          { _id: new ObjectId(activityId), userId: new ObjectId(userId) }, // Ensure the activity belongs to the user
-          { $set: updateData } // Use $set operator to update the fields
+          { _id: new ObjectId(activityId), userId: new ObjectId(userId) },
+          { $set: updateData }
         );
 
       if (result.matchedCount === 0) {
-        // No document found to update
-        res
+        return res
           .status(404)
           .send(
             "Activity not found or you do not have permission to update it."
           );
       } else if (result.modifiedCount === 0) {
-        // Document found but no changes made (possibly due to the update data being the same as the existing data)
-        res.status(200).send("No changes were made to the activity.");
+        return res.status(200).send("No changes were made to the activity.");
       } else {
-        // Document updated successfully
-        res.status(200).send("Activity updated successfully.");
+        return res.status(200).send("Activity updated successfully.");
       }
     } catch (error) {
       console.error(error);
-      res.status(500).send("An error occurred while updating the activity.");
+      return res
+        .status(500)
+        .send("An error occurred while updating the activity.");
     }
   }
 );

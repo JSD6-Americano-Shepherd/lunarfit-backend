@@ -14,7 +14,6 @@ const ACTIVITY_DATA_KEYS = [
   "start",
   "end",
   "note",
-  "image",
   "duration",
   "year",
   "month",
@@ -70,23 +69,28 @@ activityRouter.post("/", authenticateToken, async (req, res) => {
 
     if (!isBodyChecked) {
       res.send(`Missing Fields: ${"".concat(missingFields)}`);
-      return;
+      return; // Ensure no further processing after sending response
     }
 
-    try {
-      const cloudinaryResult = await uploadToCloudinary(image);
-      const imageUrl = cloudinaryResult.secure_url;
-      sumActivity.image = imageUrl;
-      await databaseClient.db().collection("activities").insertOne(sumActivity);
-      res.send("Create activity data successfully");
-    } catch (error) {
-      console.error("Error uploading image to Cloudinary:", error);
-      res.status(500).json({ message: "Error uploading image to Cloudinary" });
-      throw error;
+    // Moved to outer try block to avoid nested try-catch
+
+    if (image) {
+      if (image !== "") {
+        const cloudinaryResult = await uploadToCloudinary(image);
+        const imageUrl = cloudinaryResult.secure_url;
+        sumActivity.image = imageUrl;
+      } else {
+        sumActivity.image = "";
+      }
     }
+    await databaseClient.db().collection("activities").insertOne(sumActivity);
+    res.send("Create activity data successfully");
   } catch (error) {
-    console.error("Error creating activity:", error);
-    res.status(500).json({ message: "Error creating activity" });
+    console.error("Error:", error);
+    // Check if the headers have already been sent
+    if (!res.headersSent) {
+      res.status(500).json({ message: "Error processing request" });
+    }
   }
 });
 

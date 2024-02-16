@@ -22,7 +22,7 @@ displayActivityRouter.get("/", authenticateToken, async (req, res) => {
       .collection("activities")
       .aggregate([
         {
-          $match: { userId: userId, year: currentYear.toString() },
+          $match: { userId: userId, year: currentYear.toString },
         },
         {
           $group: {

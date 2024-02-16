@@ -51,69 +51,19 @@ const USER_DATA_KEYS = ["username", "password", "name", "age", "weight"];
 const LOGIN_DATA_KEYS = ["username", "password"];
 
 // server routes
-webServer.get("/", authenticateToken, (req, res) => {
-  const usersData = {
-    id: 1,
-    fullName: "Karin2",
-    age: 25,
-    weight: 65,
-    height: 168,
-    gender: "male",
-    activity: [
-      {
-        type: "Run",
-        time: "12:00 - 12:30 PM",
-        name: "Run with dad",
-        duration: "120",
-      },
-      {
-        type: "Swim",
-        time: "10:10 - 10:40 AM",
-        name: "Swim with mom",
-        duration: "30",
-      },
-      {
-        type: "Walk",
-        time: "6:00 - 7:00 PM",
-        name: "Walk with dog",
-        duration: "60",
-      },
-      {
-        type: "Hike",
-        time: "14:00 - 20:00 PM",
-        name: "Hike with friend",
-        duration: "500",
-      },
-      {
-        type: "Bike",
-        time: "14:00 - 20:00 PM",
-        name: "Bike with brother",
-        duration: "200",
-      },
-    ],
-  };
-
-  res.json(usersData);
-});
-
 webServer.use("/api", apiRoute);
+webServer.use((err, req, res, next) => {
+  console.error(err.stack);
 
-webServer.get("/profile", authenticateToken, async (req, res) => {
-  88;
+  const statusCode = err.statusCode || 500;
+  const errorMessage = err.message || "Internal Server Error";
 
-  //console.log(req.user);
-
-  const activityData = await databaseClient
-    .db()
-    .collection("activities")
-    .find({ userId: "01" }) // Add a query filter to select documents where userId is "01"
-    .toArray();
-  res.json(activityData);
-
-  console.log(`datauser: ${user}`);
-  //res.json(user.email);
+  res.status(statusCode).json({
+    status: "error",
+    statusCode,
+    message: errorMessage,
+  });
 });
-
 // initilize web server
 const currentServer = webServer.listen(PORT, () => {
   console.log(
