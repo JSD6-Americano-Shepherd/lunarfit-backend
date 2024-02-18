@@ -9,17 +9,23 @@ signUpRouter.get("/", (req, res) => res.send("This is signUpRouter "));
 
 signUpRouter.post("/", async (req, res) => {
   let user = req.body;
+  const { email } = user;
   const [isBodyChecked, missingFields] = checkMissingField(
     USER_DATA_KEYS,
     user
   );
-  if (!user.firstName) {
-    res.status(400).send("Firstname cannot empty");
-    return;
-  }
+
   if (!isBodyChecked) {
     res.status(404).send(`Missing Fields: ${"".concat(missingFields)}`);
     return;
+  }
+
+  const userData = await databaseClient
+    .db()
+    .collection("users")
+    .findOne({ email: email });
+  if (userData) {
+    return res.status(409).send("This email has already used");
   }
 
   try {

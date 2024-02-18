@@ -50,7 +50,7 @@ activityRouter.post("/", authenticateToken, async (req, res) => {
     const userId = userData._id;
     const duration = calculateDuration(activity.start, activity.end).toString();
 
-    const [year, month, day] = activity.date.split("-").map(Number);
+    const [year, month, day] = activity.date.split("-");
     console.log("Duration: ", duration);
     console.log(year, month, day);
 

@@ -21,6 +21,7 @@ signInRouter.post("/", async (req, res) => {
         .status(400)
         .send(`Missing Fields: ${missingFields.join(", ")}`);
     }
+
     const user = await databaseClient
       .db()
       .collection("users")

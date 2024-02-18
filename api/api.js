@@ -16,11 +16,13 @@ import signOutRouter from "../routes/signout.js";
 import profileRouter from "../routes/profile.js";
 import sumActivityRouter from "../routes/sumactivity.js";
 import displayActivityRouter from "../routes/displayActivity.js";
+import filterActivity from "../routes/filterActivity.js";
 
 apiRoute.get("/", (req, res) => res.send("This is apiroute "));
 apiRoute.use("/profile", profileRouter);
 
 apiRoute.use("/dashboard", dashboardRouter);
+apiRoute.use("/filteractivity", filterActivity);
 apiRoute.use("/activity", activityRouter);
 apiRoute.use("/activityDetail", activityDetailRouter);
 apiRoute.use("/setting", settingRouter);
